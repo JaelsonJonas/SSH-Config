@@ -1,26 +1,21 @@
-
 # Guia para Configurar Acesso SSH à VPS sem Necessidade de Especificar a Chave Privada
 
-## 1. Criar o par de chaves na máquina local (a partir da qual você quer acessar a VPS)
+## Criar o par de chaves na máquina local (a partir da qual você quer acessar a VPS)
 
 ### Comando para criar as chaves:
 
 ```bash
-ssh-keygen -b 4096
+ssh-keygen -t rsa -b 4096 -C "nome_da_key"
 ```
 
 - **Salve a chave** no local desejado. É recomendado salvar em `~/.ssh` do seu usuário.
 - Isso criará dois arquivos: um com a chave privada e outro com a chave pública.
 
-## 2. Copie a chave pública
+## Copie a chave pública
 
 - O conteúdo do arquivo com a extensão `.pub` é a sua **chave pública**. Copie o conteúdo desse arquivo.
 
-## 3. Adicionar a chave pública ao seu provedor de VPS
-
-- No painel de controle da sua VPS, procure a seção de **chaves SSH** e adicione a chave pública copiada anteriormente.
-
-## 4. Caso você tenha acesso à VPS usando **senha**
+## Caso você tenha acesso à VPS usando **senha**
 
 Se você pode acessar a VPS com senha, você pode usar o `ssh-copy-id` para copiar sua chave pública automaticamente para o servidor.
 
@@ -32,7 +27,7 @@ ssh-copy-id -i ~/.ssh/nome_da_nova_chave.pub usuario_vps@ip_da_vps
 
 - Você será solicitado a inserir a senha da VPS. O `ssh-copy-id` então adicionará a chave pública ao arquivo `authorized_keys` do servidor.
 
-## 5. Caso não haja senha para logar na VPS
+## Caso não haja senha para logar na VPS
 
 Se você já tem uma chave privada que usa para se conectar à VPS, utilize o comando abaixo para adicionar a nova chave pública ao servidor:
 
@@ -42,9 +37,21 @@ cat ~/.ssh/nome_da_nova_chave.pub | ssh -i caminho_para_chave_privada_que_acessa
 
 Esse comando copia sua chave pública para o arquivo `authorized_keys` na VPS.
 
-## 6. Configurar o arquivo `~/.ssh/config` para evitar passar a chave privada manualmente
+## Caso os Métodos Anteriores Falhem: Adicionar Chave Pública no Painel da VPS
 
-No seu computador local, edite (ou crie) o arquivo `~/.ssh/config` com o seguinte conteúdo:
+- Acesse o painel de controle do seu provedor de VPS, localize a seção de ***chaves SSH*** e adicione a chave pública copiada. Depois, repita os passos anteriores.
+
+## Acessar a VPS usando a chave priava
+
+Agora, para testar se a chave foi atrelada corretamente, utilize o seguinte comando:
+
+```bash
+ssh -i ~/.ssh/nome_da_nova_chave usuario_vps@ip_da_vps
+```
+
+## Configurar o arquivo `~/.ssh/config` para evitar passar a chave privada manualmente
+
+No seu computador local, edite (ou crie) o arquivo `~/.ssh/config` com o editor ***vi*** e inclua o seguinte conteúdo:
 
 ```bash
 Host aliasparavps
@@ -60,11 +67,11 @@ Host aliasparavps
 - `User`: O usuário que você usa para acessar a VPS.
 - `IdentityFile`: O caminho completo da chave privada usada para se conectar.
 
-## 7. Salvar e sair do arquivo
+## Salvar e sair do arquivo
 
-- Salve o arquivo (`Ctrl + O` e `Enter` no Nano) e saia (`Ctrl + X`).
+- Para salvar e sair, pressione ESC, depois digite :wq e pressione Enter.
 
-## 8. Acessar a VPS com o alias configurado
+## Acessar a VPS com o alias configurado
 
 Agora, sempre que quiser acessar a VPS, você pode usar o comando:
 
