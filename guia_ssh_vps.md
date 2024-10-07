@@ -1,5 +1,9 @@
 # Guia para Configurar Acesso SSH à VPS sem Necessidade de Especificar a Chave Privada
 
+Este guia foca principalmente em comandos **bash**. No entanto, se você estiver utilizando o **PowerShell** no Windows, o fluxo será um pouco diferente:
+
+- No PowerShell, o caminho para a pasta **home** do usuário deve ser especificado usando **`$env:USERPROFILE\`** em vez de **`~/`**.
+
 ## Criar o par de chaves na máquina local (a partir da qual você quer acessar a VPS)
 
 ## Gerar Par de Chaves SSH
@@ -41,9 +45,9 @@ ssh-keygen -t ed25519 -C "nome_da_key" -f ~/.ssh/minha_chave
 
 Ao usar o comando **ED25519**, você estará optando por uma chave moderna, mais rápida e segura. Se preferir **RSA**, o segundo comando comentado oferece a alternativa, com uma chave de 4096 bits para maior segurança.
 
-## Caso você tenha acesso à VPS usando **senha**
+## Acesso à VPS usando **senha**
 
-Se você pode acessar a VPS com senha, você pode usar o `ssh-copy-id` para copiar sua chave pública automaticamente para o servidor.
+Se você tem acesso à VPS via senha, pode usar `ssh-copy-id` para copiar sua chave pública automaticamente para o servidor.
 
 ### Comando para usar `ssh-copy-id`:
 
@@ -51,17 +55,32 @@ Se você pode acessar a VPS com senha, você pode usar o `ssh-copy-id` para copi
 ssh-copy-id -i ~/.ssh/nome_da_nova_chave.pub usuario_vps@ip_da_vps
 ```
 
-- Você será solicitado a inserir a senha da VPS. O `ssh-copy-id` então adicionará a chave pública ao arquivo `authorized_keys` do servidor.
+- Isso copiará a chave pública para o arquivo `~/.ssh/authorized_keys` da VPS.
 
-## Caso não haja senha para logar na VPS
+---
 
-Se você já tem uma chave privada que usa para se conectar à VPS, utilize o comando abaixo para adicionar a nova chave pública ao servidor:
+### No PowerShell (Windows)
+
+O PowerShell não possui `ssh-copy-id`, então use o comando abaixo:
+
+```powershell
+type $env:USERPROFILE\.ssh\id_rsa.pub\nome_da_nova_chave.pub | ssh -i caminho_para_chave_privada_que_acessa_a_vps usuario_vps@ip_da_vps "cat >> ~/.ssh/authorized_keys"
+```
+
+- Esse comando envia a chave pública para a VPS e a adiciona ao arquivo `authorized_keys`.
+
+---
+
+## Acesso sem senha
+
+Se você já acessa a VPS usando uma chave privada, adicione a nova chave pública com o seguinte comando:
 
 ```bash
 cat ~/.ssh/nome_da_nova_chave.pub | ssh -i caminho_para_chave_privada_que_acessa_a_vps usuario_vps@ip_da_vps "cat >> ~/.ssh/authorized_keys"
 ```
 
-Esse comando copia sua chave pública para o arquivo `authorized_keys` na VPS.
+- Se estiver usando PowerShell, siga as instruções da seção [No PowerShell](#no-powershell-windows).
+- Esse comando anexará a nova chave pública ao arquivo `authorized_keys` na VPS.
 
 ## Caso os Métodos Anteriores Falhem: Adicionar Chave Pública no Painel da VPS
 

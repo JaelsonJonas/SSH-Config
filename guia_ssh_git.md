@@ -1,5 +1,9 @@
 # Configurando Repositório com Conexão SSH
 
+Este guia foca principalmente em comandos **bash**. No entanto, se você estiver utilizando o **PowerShell** no Windows, o fluxo será um pouco diferente:
+
+- No PowerShell, o caminho para a pasta **home** do usuário deve ser especificado usando **`$env:USERPROFILE\`** em vez de **`~/`**.
+
 ## Gerar Par de Chaves SSH
 
 Para gerar o par de chaves SSH, utilize o seguinte comando:
@@ -32,11 +36,11 @@ ssh-keygen -t ed25519 -C "nome_da_key" -f ~/.ssh/minha_chave
   - Um valor mais comum é **2048 bits**, mas 4096 bits oferece uma segurança mais robusta a longo prazo.
 
 #### Dicas:
+
 - É recomendado salvar suas chaves no diretório `~/.ssh` do seu usuário, pois é o local padrão onde o SSH espera encontrar essas chaves.
 - Durante a criação, você será solicitado a definir uma **passphrase** (senha), o que adiciona uma camada extra de segurança. Se você não quiser definir uma senha, basta pressionar Enter para pular essa etapa.
 
 Ao usar o comando **ED25519**, você estará optando por uma chave moderna, mais rápida e segura. Se preferir **RSA**, o segundo comando comentado oferece a alternativa, com uma chave de 4096 bits para maior segurança.
-
 
 ## Adicionar a Chave Pública ao Repositório
 
