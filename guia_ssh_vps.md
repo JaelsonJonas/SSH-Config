@@ -2,18 +2,44 @@
 
 ## Criar o par de chaves na máquina local (a partir da qual você quer acessar a VPS)
 
-### Comando para criar as chaves:
+## Gerar Par de Chaves SSH
+
+Para gerar o par de chaves SSH, utilize o seguinte comando:
 
 ```bash
-ssh-keygen -t rsa -b 4096 -C "nome_da_key"
+ssh-keygen -t ed25519 -C "nome_da_key" -f ~/.ssh/minha_chave
+# RSA: ssh-keygen -b 4096 -C "nome_da_key" -f ~/.ssh/minha_chave
 ```
 
-- **Salve a chave** no local desejado. É recomendado salvar em `~/.ssh` do seu usuário.
-- Isso criará dois arquivos: um com a chave privada e outro com a chave pública.
+#### Explicação dos parâmetros utilizados:
 
-## Copie a chave pública
+- **`ssh-keygen`**: Esse é o utilitário padrão para gerar pares de chaves SSH.
 
-- O conteúdo do arquivo com a extensão `.pub` é a sua **chave pública**. Copie o conteúdo desse arquivo.
+- **`-t ed25519`**: Define o **tipo de algoritmo** a ser usado para gerar o par de chaves.
+
+  - Aqui, o algoritmo **ED25519** é utilizado, que é altamente seguro e mais eficiente em termos de desempenho e tamanho de chave.
+
+  - Alternativamente, você pode usar **RSA** com o comando comentado abaixo (não recomendado para novos projetos, mas amplamente compatível com sistemas legados).
+
+- **`-C "nome_da_key"`**: Este parâmetro adiciona um **comentário** à chave pública gerada.
+
+  - Esse comentário ajuda a identificar a chave posteriormente, como quando múltiplas chaves são usadas. Ele pode ser algo descritivo como seu e-mail ou uma descrição da chave, ex: `"minha_chave_trabalho"`.
+
+- **`-f ~/.ssh/minha_chave`**: Especifica o **caminho e o nome do arquivo** para a chave privada gerada.
+
+  - Nesse caso, a chave privada será salva em `~/.ssh/minha_chave` e a chave pública correspondente será gerada como `~/.ssh/minha_chave.pub`.
+
+- **`-b 4096`**: Define o tamanho da chave em **bits**.
+
+  - Este parâmetro só é usado com o algoritmo **RSA**. Um tamanho de chave de **4096 bits** é recomendado para uma maior segurança, pois oferece mais resistência a tentativas de quebra.
+  - Um valor mais comum é **2048 bits**, mas 4096 bits oferece uma segurança mais robusta a longo prazo.
+
+#### Dicas:
+
+- É recomendado salvar suas chaves no diretório `~/.ssh` do seu usuário, pois é o local padrão onde o SSH espera encontrar essas chaves.
+- Durante a criação, você será solicitado a definir uma **passphrase** (senha), o que adiciona uma camada extra de segurança. Se você não quiser definir uma senha, basta pressionar Enter para pular essa etapa.
+
+Ao usar o comando **ED25519**, você estará optando por uma chave moderna, mais rápida e segura. Se preferir **RSA**, o segundo comando comentado oferece a alternativa, com uma chave de 4096 bits para maior segurança.
 
 ## Caso você tenha acesso à VPS usando **senha**
 
@@ -39,7 +65,7 @@ Esse comando copia sua chave pública para o arquivo `authorized_keys` na VPS.
 
 ## Caso os Métodos Anteriores Falhem: Adicionar Chave Pública no Painel da VPS
 
-- Acesse o painel de controle do seu provedor de VPS, localize a seção de ***chaves SSH*** e adicione a chave pública copiada. Depois, repita os passos anteriores.
+- Acesse o painel de controle do seu provedor de VPS, localize a seção de **_chaves SSH_** e adicione a chave pública copiada. Depois, repita os passos anteriores.
 
 ## Acessar a VPS usando a chave priava
 
@@ -51,13 +77,13 @@ ssh -i ~/.ssh/nome_da_nova_chave usuario_vps@ip_da_vps
 
 ## Configurar o arquivo `~/.ssh/config` para evitar passar a chave privada manualmente
 
-No seu computador local, edite (ou crie) o arquivo `~/.ssh/config` com o editor ***vi*** e inclua o seguinte conteúdo:
+No seu computador local, edite (ou crie) o arquivo `~/.ssh/config` com o editor **_vi_** e inclua o seguinte conteúdo:
 
 ```bash
 Host aliasparavps
     HostName ipdavps
     User usuariovps
-    IdentityFile ~/caminhoparaprivatekey
+    IdentityFile ~/caminho_para_private_key
 ```
 
 ### Explicação dos campos:
