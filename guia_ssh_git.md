@@ -2,7 +2,9 @@
 
 Este guia foca principalmente em comandos **bash**. No entanto, se você estiver utilizando o **PowerShell** no Windows, o fluxo será um pouco diferente:
 
-- No PowerShell, o caminho para a pasta **home** do usuário deve ser especificado usando **`$env:USERPROFILE\`** em vez de **`~/`**.
+- O caminho para a pasta **home** do usuário deve ser especificado usando **`$env:USERPROFILE\`** em vez de **`~/`**.
+
+- Certifique-se de usar o **`\`** como separador de diretórios, conforme o padrão do Windows.
 
 ## Gerar Par de Chaves SSH
 
@@ -13,36 +15,25 @@ ssh-keygen -t ed25519 -C "nome_da_key" -f ~/.ssh/minha_chave
 # RSA: ssh-keygen -b 4096 -C "nome_da_key" -f ~/.ssh/minha_chave
 ```
 
-#### Explicação dos parâmetros utilizados:
+### Parâmetros do comando `ssh-keygen`:
 
-- **`ssh-keygen`**: Esse é o utilitário padrão para gerar pares de chaves SSH.
+- **`ssh-keygen`**: Utilitário padrão para gerar pares de chaves SSH.
 
-- **`-t ed25519`**: Define o **tipo de algoritmo** a ser usado para gerar o par de chaves.
+- **`-t ed25519`**: Define o algoritmo ED25519, mais seguro e eficiente. Alternativamente, o RSA pode ser usado para compatibilidade com sistemas legados.
 
-  - Aqui, o algoritmo **ED25519** é utilizado, que é altamente seguro e mais eficiente em termos de desempenho e tamanho de chave.
+- **`-C "nome_da_key"`**: Adiciona um comentário à chave pública para facilitar a identificação, como um e-mail ou descrição.
 
-  - Alternativamente, você pode usar **RSA** com o comando comentado abaixo (não recomendado para novos projetos, mas amplamente compatível com sistemas legados).
+- **`-f ~/.ssh/minha_chave`**: Especifica o caminho e nome do arquivo para a chave privada. A chave pública será gerada no mesmo local.
 
-- **`-C "nome_da_key"`**: Este parâmetro adiciona um **comentário** à chave pública gerada.
+- **`-b 4096`**: Define o tamanho da chave em bits (aplicável apenas ao RSA). Um valor de 4096 bits é recomendado para maior segurança.
 
-  - Esse comentário ajuda a identificar a chave posteriormente, como quando múltiplas chaves são usadas. Ele pode ser algo descritivo como seu e-mail ou uma descrição da chave, ex: `"minha_chave_trabalho"`.
+### Dicas:
 
-- **`-f ~/.ssh/minha_chave`**: Especifica o **caminho e o nome do arquivo** para a chave privada gerada.
+- É recomendado salvar suas chaves no diretório ~/.ssh do seu usuário, pois é o local padrão onde o SSH espera encontrar essas chaves.
 
-  - Nesse caso, a chave privada será salva em `~/.ssh/minha_chave` e a chave pública correspondente será gerada como `~/.ssh/minha_chave.pub`.
+- Durante a criação, você será solicitado a definir uma **_passphrase_** (senha), o que adiciona uma camada extra de segurança. Se você não quiser definir uma senha, basta pressionar Enter para pular essa etapa.
 
-- **`-b 4096`**: Define o tamanho da chave em **bits**.
-  - Este parâmetro só é usado com o algoritmo **RSA**. Um tamanho de chave de **4096 bits** é recomendado para uma maior segurança, pois oferece mais resistência a tentativas de quebra.
-  - Um valor mais comum é **2048 bits**, mas 4096 bits oferece uma segurança mais robusta a longo prazo.
-
-#### Dicas:
-
-- É recomendado salvar suas chaves no diretório `~/.ssh` do seu usuário, pois é o local padrão onde o SSH espera encontrar essas chaves.
-- Durante a criação, você será solicitado a definir uma **passphrase** (senha), o que adiciona uma camada extra de segurança. Se você não quiser definir uma senha, basta pressionar Enter para pular essa etapa.
-
-Ao usar o comando **ED25519**, você estará optando por uma chave moderna, mais rápida e segura. Se preferir **RSA**, o segundo comando comentado oferece a alternativa, com uma chave de 4096 bits para maior segurança.
-
-## Adicionar a Chave Pública ao Repositório
+## Adicionar a Chave Pública no provedor do repositorio
 
 Após gerar as chaves, copie a chave pública e adicione-a nas configurações de SSH do seu repositório.
 
@@ -85,7 +76,7 @@ ssh -T github
 Se o teste de conexão for bem-sucedido, você pode clonar o repositório utilizando o seguinte comando:
 
 ```bash
-git clone github:caminho/do/repositorio
+git clone github:UsuarioGithub/caminho/do/repositorio.git
 ```
 
 ## Alterar um Repositório de HTTPS para SSH
@@ -103,7 +94,7 @@ git remote -v
 Utilize o comando abaixo para atualizar a URL do repositório remoto:
 
 ```bash
-git remote set-url origin github:caminho/do/repositorio
+git remote set-url origin github:UsuarioGithub/caminho/do/repositorio.git
 ```
 
 Isso vinculará seu repositório local ao repositório remoto via SSH.
