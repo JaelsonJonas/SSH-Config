@@ -54,7 +54,7 @@ ssh-copy-id -i ~/.ssh/nome_da_nova_chave.pub usuario_vps@ip_da_vps
 O PowerShell não possui `ssh-copy-id`, então use o comando abaixo:
 
 ```powershell
-type $env:USERPROFILE\.ssh\id_rsa.pub\nome_da_nova_chave.pub | ssh -i caminho_para_chave_privada_que_acessa_a_vps usuario_vps@ip_da_vps "cat >> ~/.ssh/authorized_keys"
+type $env:USERPROFILE\nome_da_nova_chave.pub | ssh usuario_vps@ip_da_vps "cat >> ~/.ssh/authorized_keys"
 ```
 
 - Esse comando envia a chave pública para a VPS e a adiciona ao arquivo `authorized_keys`.
